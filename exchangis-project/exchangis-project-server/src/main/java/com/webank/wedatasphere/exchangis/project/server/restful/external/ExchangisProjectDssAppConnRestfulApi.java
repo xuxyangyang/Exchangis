@@ -139,6 +139,7 @@ public class ExchangisProjectDssAppConnRestfulApi {
      */
     @RequestMapping( value = "/check/{name}", method = RequestMethod.POST)
     public Message getProjectByName(HttpServletRequest request, @PathVariable("name") String name) {
+        LOG.info("project name43222:{}", name);
         String username = SecurityFilter.getLoginUsername(request);
         try {
             ExchangisProjectInfo projectInfo = projectService.selectByName(name);

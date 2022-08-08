@@ -14,7 +14,7 @@ import com.webank.wedatasphere.exchangis.job.server.exception.ExchangisJobServer
 import com.webank.wedatasphere.exchangis.job.server.service.JobInfoService;
 import com.webank.wedatasphere.exchangis.project.server.service.ProjectService;
 import com.webank.wedatasphere.exchangis.project.server.vo.ExchangisProjectInfo;
-import org.apache.linkis.server.BDPJettyServerHelper;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.linkis.server.Message;
 import org.apache.linkis.server.security.ProxyUserSSOUtils;
 import org.apache.linkis.server.security.SecurityFilter;
@@ -382,6 +382,11 @@ public class ExchangisJobRestfulApi {
     public Message saveJobConfig(@PathVariable("id") Long id,
                                  @RequestBody ExchangisJobVo jobVo, HttpServletRequest request) {
         if (ExchangisLauncherConfiguration.LIMIT_INTERFACE.getValue()) {
+            // Distinguish whether saveJobConfig is from save or execute
+            String saveFrom = request.getHeader("save-from");
+            if (StringUtils.equals("execute", saveFrom)) {
+                return Message.ok();
+            }
             return Message.error("You have no permission to save content (没有保存任务权限)");
         }
         jobVo.setId(id);

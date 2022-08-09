@@ -282,13 +282,14 @@ export const getJobs = (id, jobType, name, current, size) => {
   });
 };
 
-export const saveProject = (id, body) => {
+export const saveProject = (id, body, type = 'save') => {
   return request(`/job/${id}/content`, {
     ...body,
     labels: {
       route: getEnvironment()
     }
   }, {
+    headers: { 'save-from': type },
     method: "PUT",
   });
 };

@@ -829,7 +829,7 @@ export default {
 
             return res;
         },
-        saveAll(cb) {
+        saveAll(type = 'save', cb) {
             const saveContent = [];
             const data = toRaw(this.jobData);
             const tips = this.checkPostData(data);
@@ -906,14 +906,14 @@ export default {
             }
             saveProject(this.jobData.id, {
                 content: JSON.stringify(saveContent)
-            }).then((res) => {
+            }, type).then((res) => {
                 cb && cb();
                 message.success('保存成功');
             });
         },
         // 执行任务
         executeTask() {
-            this.saveAll(() => {
+            this.saveAll('execute', () => {
                 const { id } = this.curTab;
                 this.tasklist = [];
                 this.spinning = true;

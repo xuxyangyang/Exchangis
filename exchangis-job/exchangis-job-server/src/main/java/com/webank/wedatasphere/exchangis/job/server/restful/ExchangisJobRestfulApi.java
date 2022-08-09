@@ -414,6 +414,10 @@ public class ExchangisJobRestfulApi {
     public Message saveSubJobs(@PathVariable("id") Long id,
                                @RequestBody ExchangisJobVo jobVo, HttpServletRequest request) {
         if (ExchangisLauncherConfiguration.LIMIT_INTERFACE.getValue()) {
+            String saveFrom = request.getHeader("save-from");
+            if (StringUtils.equals("execute", saveFrom)) {
+                return Message.ok();
+            }
             return Message.error("You have no permission to save content (没有保存任务权限)");
         }
         jobVo.setId(id);

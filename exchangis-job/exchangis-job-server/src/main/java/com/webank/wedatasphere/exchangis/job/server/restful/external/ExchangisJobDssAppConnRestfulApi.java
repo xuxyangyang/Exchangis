@@ -204,6 +204,9 @@ public class ExchangisJobDssAppConnRestfulApi {
             jobInfo = new ExchangisJobInfo(jobVo);
             jobInfo.setName(jobVo.getJobName());
             jobInfo.setId(jobVo.getId());
+            // Temporarily set hadoop
+            jobInfo.setExecuteUser("hadoop");
+
             LOG.info("jobInfo: name{},executerUser{},createUser{},id{}",jobInfo.getName(),jobInfo.getExecuteUser(),jobInfo.getCreateUser(),jobInfo.getId());
             LOG.info("loginUser: {}, jobVo:{}",loginUser,jobVo);
             //find project info

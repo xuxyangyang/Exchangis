@@ -60,6 +60,8 @@ public class ExchangisJobExecuteRestfulApi {
             }
             // Convert to the job info
             jobInfo = new ExchangisJobInfo(jobVo);
+            // Temporarily set hadoop
+            jobInfo.setExecuteUser("hadoop");
 
             if (!hasAuthority(loginUser, jobInfo)){
                 return Message.error("You have no permission to execute job (没有执行任务权限)");

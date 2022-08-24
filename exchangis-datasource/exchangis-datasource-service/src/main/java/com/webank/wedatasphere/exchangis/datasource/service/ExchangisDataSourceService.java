@@ -9,6 +9,7 @@ import com.webank.wedatasphere.exchangis.dao.domain.ExchangisJobParamConfig;
 import com.webank.wedatasphere.exchangis.dao.mapper.ExchangisJobDsBindMapper;
 import com.webank.wedatasphere.exchangis.dao.mapper.ExchangisJobParamConfigMapper;
 import com.webank.wedatasphere.exchangis.datasource.GetDataSourceInfoByIdAndVersionIdAction;
+import com.webank.wedatasphere.exchangis.datasource.Utils.ConnectDataSourceLimitUtil;
 import com.webank.wedatasphere.exchangis.datasource.Utils.RSAUtil;
 import com.webank.wedatasphere.exchangis.datasource.core.ExchangisDataSource;
 import com.webank.wedatasphere.exchangis.datasource.core.context.ExchangisDataSourceContext;
@@ -42,7 +43,6 @@ import org.apache.linkis.httpclient.response.Result;
 import org.apache.linkis.metadatamanager.common.domain.MetaColumnInfo;
 import org.apache.linkis.server.Message;
 import org.apache.linkis.server.security.SecurityFilter;
-import org.bouncycastle.jcajce.provider.asymmetric.RSA;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -1032,6 +1032,11 @@ public class ExchangisDataSourceService extends AbstractDataSourceService implem
         LinkisDataSourceRemoteClient linkisDataSourceRemoteClient = ExchangisLinkisRemoteClient.getLinkisDataSourceRemoteClient();
         String userName = SecurityFilter.getLoginUsername(request);
         LOGGER.info("testConnect userName:" + userName);
+
+        // connect datasource limit check
+        ConnectDataSourceDTO connectDataSourceDTO = new ConnectDataSourceDTO(userName, id, version);
+        ConnectDataSourceLimitUtil.tryConnect(connectDataSourceDTO);
+
         DataSourceTestConnectResult result;
         try {
             result = linkisDataSourceRemoteClient.getDataSourceTestConnect(
@@ -1061,6 +1066,10 @@ public class ExchangisDataSourceService extends AbstractDataSourceService implem
         LinkisDataSourceRemoteClient linkisDataSourceRemoteClient = ExchangisLinkisRemoteClient.getLinkisDataSourceRemoteClient();
         String userName = SecurityFilter.getLoginUsername(request);
         LOGGER.info("testConnect userName:" + userName);
+
+        // connect datasource limit check
+        ConnectDataSourceDTO connectDataSourceDTO = new ConnectDataSourceDTO(userName, vo.getDataSourceTypeId(), vo.getDataSourceName());
+        ConnectDataSourceLimitUtil.tryConnect(connectDataSourceDTO);
 
         Map<String, Object> json;
         try {

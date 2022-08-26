@@ -1033,10 +1033,6 @@ public class ExchangisDataSourceService extends AbstractDataSourceService implem
         String userName = SecurityFilter.getLoginUsername(request);
         LOGGER.info("testConnect userName:" + userName);
 
-        // connect datasource limit check
-        ConnectDataSourceDTO connectDataSourceDTO = new ConnectDataSourceDTO(userName, id, version);
-        ConnectDataSourceLimitUtil.tryConnect(connectDataSourceDTO);
-
         DataSourceTestConnectResult result;
         try {
             result = linkisDataSourceRemoteClient.getDataSourceTestConnect(
@@ -1052,10 +1048,16 @@ public class ExchangisDataSourceService extends AbstractDataSourceService implem
         }
 
         if (Objects.isNull(result)) {
+            // connect datasource limit check
+            ConnectDataSourceDTO connectDataSourceDTO = new ConnectDataSourceDTO(userName, id, version);
+            ConnectDataSourceLimitUtil.tryConnect(connectDataSourceDTO);
             throw new ExchangisDataSourceException(ExchangisDataSourceExceptionCode.CLIENT_DATASOURCE_TEST_CONNECTION_ERROR.getCode(), "datasource test connection response body null or empty");
         }
 
         if (result.getStatus() != 0) {
+            // connect datasource limit check
+            ConnectDataSourceDTO connectDataSourceDTO = new ConnectDataSourceDTO(userName, id, version);
+            ConnectDataSourceLimitUtil.tryConnect(connectDataSourceDTO);
             throw new ExchangisDataSourceException(result.getStatus(), result.getMessage());
         }
 
@@ -1066,10 +1068,6 @@ public class ExchangisDataSourceService extends AbstractDataSourceService implem
         LinkisDataSourceRemoteClient linkisDataSourceRemoteClient = ExchangisLinkisRemoteClient.getLinkisDataSourceRemoteClient();
         String userName = SecurityFilter.getLoginUsername(request);
         LOGGER.info("testConnect userName:" + userName);
-
-        // connect datasource limit check
-        ConnectDataSourceDTO connectDataSourceDTO = new ConnectDataSourceDTO(userName, vo.getDataSourceTypeId(), vo.getDataSourceName());
-        ConnectDataSourceLimitUtil.tryConnect(connectDataSourceDTO);
 
         Map<String, Object> json;
         try {
@@ -1093,10 +1091,16 @@ public class ExchangisDataSourceService extends AbstractDataSourceService implem
         }
 
         if (Objects.isNull(result)) {
+            // connect datasource limit check
+            ConnectDataSourceDTO connectDataSourceDTO = new ConnectDataSourceDTO(userName, vo.getDataSourceTypeId(), vo.getDataSourceName());
+            ConnectDataSourceLimitUtil.tryConnect(connectDataSourceDTO);
             throw new ExchangisDataSourceException(ExchangisDataSourceExceptionCode.CLIENT_DATASOURCE_TEST_CONNECTION_ERROR.getCode(), "datasource test connection response body null or empty");
         }
 
         if (result.getStatus() != 0) {
+            // connect datasource limit check
+            ConnectDataSourceDTO connectDataSourceDTO = new ConnectDataSourceDTO(userName, vo.getDataSourceTypeId(), vo.getDataSourceName());
+            ConnectDataSourceLimitUtil.tryConnect(connectDataSourceDTO);
             throw new ExchangisDataSourceException(result.getStatus(), result.getMessage());
         }
 

@@ -82,7 +82,7 @@
                 <a-form-item :label="$t('job.jobDetail.engine')" name="engineType">
                     <a-select
                         v-model:value="formState.engineType"
-                        :disabled="!!formState.originName || (mode === 'modify')"
+                        :disabled="!!formState.originName"
                     >
                         <a-select-option v-for="engine in engines" :key="engine" :value="engine">{{engine}}</a-select-option>
                     </a-select>

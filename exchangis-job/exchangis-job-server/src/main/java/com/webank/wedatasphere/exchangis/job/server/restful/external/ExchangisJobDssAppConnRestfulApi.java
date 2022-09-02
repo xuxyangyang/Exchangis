@@ -3,6 +3,7 @@ package com.webank.wedatasphere.exchangis.job.server.restful.external;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.webank.wedatasphere.exchangis.common.validator.groups.InsertGroup;
 import com.webank.wedatasphere.exchangis.job.domain.ExchangisJobInfo;
+import com.webank.wedatasphere.exchangis.job.launcher.ExchangisLauncherConfiguration;
 import com.webank.wedatasphere.exchangis.job.launcher.domain.task.TaskStatus;
 import com.webank.wedatasphere.exchangis.job.server.exception.ExchangisJobServerException;
 import com.webank.wedatasphere.exchangis.job.server.service.IProjectCopyService;
@@ -73,6 +74,9 @@ public class ExchangisJobDssAppConnRestfulApi {
             @Validated({InsertGroup.class, Default.class}) @RequestBody ExchangisJobVo exchangisJobVo,
             BindingResult result,
             HttpServletRequest request) {
+        if (ExchangisLauncherConfiguration.LIMIT_INTERFACE.getValue()) {
+            return Message.error("You have no permission to create (没有创建项目权力)");
+        }
         if (result.hasErrors()){
             return Message.error(result.getFieldErrors().get(0).getDefaultMessage());
         }
@@ -86,7 +90,7 @@ public class ExchangisJobDssAppConnRestfulApi {
             Long id = null;
             id = jobInfoService.createJob(exchangisJobVo).getId();
             response.data("id", id);
-            LOG.info("id6666: {}", id);
+            LOG.info("job id is: {}", id);
         } catch (Exception e){
             String message = "Fail to create dss job: " + exchangisJobVo.getJobName() +" (创建DSS任务失败)";
             LOG.error(message, e);
@@ -103,19 +107,19 @@ public class ExchangisJobDssAppConnRestfulApi {
      */
     @RequestMapping( value = "/{id:\\d+}", method = RequestMethod.POST)
     public Message deleteJob(@PathVariable("id") Long id, HttpServletRequest request) {
+        if (ExchangisLauncherConfiguration.LIMIT_INTERFACE.getValue()) {
+            return Message.error("You have no permission to update (没有删除权限)");
+        }
         String userName = SecurityFilter.getLoginUsername(request);
         Message response = Message.ok("dss job deleted");
         try {
-            LOG.info("delete job bean: {}, jobid: {}", jobInfoService.getJob(id, true), jobInfoService.getJob(id, true).getId());
+            //LOG.info("delete job bean: {}, jobid: {}", jobInfoService.getJob(id, true), jobInfoService.getJob(id, true).getId());
             if (Objects.isNull(jobInfoService.getJob(id, true)) || jobInfoService.getJob(id, true).getId() == null){
                 return response;
             }
             else if (!hasAuthority(userName, jobInfoService.getJob(id, true))) {
                 return Message.error("You have no permission to update (没有删除权限)");
             }
-            /*else if (!AuthorityUtils.hasOwnAuthority(jobInfoService.getJob(id, true).getProjectId(), userName) && !AuthorityUtils.hasEditAuthority(jobInfoService.getJob(id, true).getProjectId(), userName)) {
-                return Message.error("You have no permission to delete (没有编辑权限，无法删除)");
-            }*/
             jobInfoService.deleteJob(id);
         } catch (Exception e){
             String message = "Fail to delete dss job [ id: " + id + "] (删除DSS任务失败)";
@@ -135,6 +139,9 @@ public class ExchangisJobDssAppConnRestfulApi {
     public Message updateJob(@PathVariable("id") Long id,
                              @Validated @RequestBody ExchangisJobVo exchangisJobVo,
                              BindingResult result, HttpServletRequest request) {
+        if (ExchangisLauncherConfiguration.LIMIT_INTERFACE.getValue()) {
+            return Message.error("You have no permission to update (没有更新权限)");
+        }
         if (result.hasErrors()){
             return Message.error(result.getFieldErrors().get(0).getDefaultMessage());
         }
@@ -170,9 +177,9 @@ public class ExchangisJobDssAppConnRestfulApi {
     @RequestMapping( value = "/execute/{id}", method = RequestMethod.POST)
     public Message executeJob(@PathVariable("id") Long id, HttpServletRequest request, @RequestBody Map<String, Object> params) {
         try {
-            LOG.info("start to parse params8909");
+            LOG.info("start to parse params");
             String paramString = BDPJettyServerHelper.jacksonJson().writeValueAsString(params);
-            LOG.error("paramString999879: {}", paramString);
+            LOG.error("paramString: {}", paramString);
         } catch (JsonProcessingException e) {
             LOG.error("parse execute content error: {}", e.getMessage());
         }
@@ -240,8 +247,12 @@ public class ExchangisJobDssAppConnRestfulApi {
     public Message importJob(@Context HttpServletRequest request, @RequestBody Map<String, Object> params) throws ServerException, ExchangisJobServerException{
 
         Message response = null;
+        String userName = SecurityFilter.getLoginUsername(request);
         try {
             LOG.info("param: {}", params);
+            /*if (!hasAuthority(userName, jobInfoService.getJob(((Integer) params.get("sqoopIds")).longValue(), true))) {
+                return Message.error("You have no permission to import (没有导入权限)");
+            }*/
             response = projectImportServer.importProject(request, params);
             LOG.info("import job success");
         } catch (ExchangisJobServerException e){
@@ -260,6 +271,9 @@ public class ExchangisJobDssAppConnRestfulApi {
         LOG.info("export function params: {}", params);
         Message response = null;
         try {
+            /*if (!hasAuthority(userName, jobInfoService.getJob(((Integer) params.get("sqoopIds")).longValue(), true))) {
+                return Message.error("You have no permission to export (没有导出权限)");
+            }*/
             response = jobInfoService.exportProject(params, userName, request);
             LOG.info("export job success");
         } catch (Exception e){

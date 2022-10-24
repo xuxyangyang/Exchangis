@@ -47,6 +47,16 @@ public class ExchangisJobInfo extends GenericExchangisJob {
         this.jobParams = jobVo.getJobParams();
     }
 
+    public ExchangisJobInfo(ExchangisClientJobInfo exchangisClientJobInfo) {
+        //nonId
+        this.name = exchangisClientJobInfo.getJobName();
+        this.engineType = exchangisClientJobInfo.getEngineType();
+        this.createTime = exchangisClientJobInfo.getCreateTime();
+        this.createUser = exchangisClientJobInfo.getCreateUser();
+        this.executeUser = exchangisClientJobInfo.getExecUser();
+        //jobParams
+    }
+
     public ExchangisJobInfo(){
 
     }

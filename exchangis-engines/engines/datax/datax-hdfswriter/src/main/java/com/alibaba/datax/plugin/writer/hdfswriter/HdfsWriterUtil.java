@@ -18,6 +18,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.hadoop.fs.*;
+import org.apache.hadoop.hive.common.type.HiveDecimal;
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hadoop.hive.metastore.IMetaStoreClient;
 import org.apache.hadoop.hive.metastore.Warehouse;
@@ -39,6 +40,7 @@ import org.apache.hadoop.security.UserGroupInformation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.net.URI;
 import java.security.PrivilegedExceptionAction;
 import java.text.SimpleDateFormat;
@@ -696,6 +698,9 @@ public class HdfsWriterUtil {
                     case ARRAY:
                         objectInspector = OrcStruct.createObjectInspector(TypeInfoFactory.getListTypeInfo(TypeInfoFactory.stringTypeInfo));
                         break;
+                    case DECIMAL:
+                        objectInspector = ObjectInspectorFactory.getReflectionObjectInspector(HiveDecimal.class, ObjectInspectorFactory.ObjectInspectorOptions.JAVA);
+                        break;
                     default:
                         throw DataXException
                                 .asDataXException(
@@ -784,6 +789,9 @@ public class HdfsWriterUtil {
                             case TIMESTAMP:
                                 recordList.add(new java.sql.Timestamp(column.asDate().getTime()));
                                 break;
+                            case DECIMAL:
+                                BigDecimal bigDecimal = new BigDecimal(column.asString());
+                                recordList.add(HiveDecimal.create(bigDecimal));
                             default:
                                 throw DataXException
                                         .asDataXException(

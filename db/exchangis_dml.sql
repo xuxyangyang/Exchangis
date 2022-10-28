@@ -63,9 +63,7 @@ INSERT INTO `exchangis_job_param_config` (config_key,config_name,config_directio
 ;
 
 INSERT INTO `exchangis_job_param_config` (config_key,config_name,config_direction,`type`,ui_type,ui_field,ui_label,unit,required,value_type,value_range,default_value,validate_type,validate_range,validate_msg,is_hidden,is_advanced,source,`level`,treename,sort,description,status,ref_id) VALUES
-('where','WHERE条件','SOURCE','ORACLE','INPUT','where','WHERE条件',NULL,0,'VARCHAR',NULL,NULL,'REGEX','^[\\s\\S]{0,500}$','WHERE条件输入过长',0,0,NULL,1,'',2,NULL,1,NULL)
-,('writeMode','写入方式','DATAX-SINK','ORACLE','OPTION','writeMode','写入方式',NULL,1,'OPTION','["INSERT","UPDATE"]','INSERT',NULL,NULL,'写入方式输入错误',0,0,NULL,1,NULL,1,NULL,1,NULL)
-;
+('where','WHERE条件','SOURCE','ORACLE','INPUT','where','WHERE条件',NULL,0,'VARCHAR',NULL,NULL,'REGEX','^[\\s\\S]{0,500}$','WHERE条件输入过长',0,0,NULL,1,'',2,NULL,1,NULL);
 
 -- engine_settings records
 INSERT INTO `exchangis_engine_settings` (id, engine_name, engine_desc, engine_settings_value, engine_direction, res_loader_class, res_uploader_class, modify_time, create_time) VALUES

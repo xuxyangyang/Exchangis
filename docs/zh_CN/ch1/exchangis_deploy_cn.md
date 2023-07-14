@@ -23,7 +23,7 @@ Exchangis 的安装，主要分为以下四步：
 | Linkis1.1.1                           | 必装 | [如何安装Linkis](https://linkis.apache.org/zh-CN/docs/latest/deployment/quick-deploy) |
 | Nginx                                 | 必装 | [如何安装 Nginx](http://nginx.org/en/linux_packages.html) |
 
-底层依赖组件检查
+底层依赖组件检查：
 
 $\color{#FF0000}{注意：一定要使用最新版的dss1.1.0，及linkis1.1.1}$。
 
@@ -31,7 +31,7 @@ $\color{#FF0000}{注意：一定要使用最新版的dss1.1.0，及linkis1.1.1}$
 
 [DSS1.1.0代码地址](https://github.com/WeBankFinTech/DataSphereStudio/tree/dev-1.1.0)
 
-datasource启用
+datasource启用：
 
 linkis的启动脚本中默认不会启动数据源相关的服务两个服务（ps-data-source-manager，ps-metadatamanager）， 如果想使用数据源服务，可以通过如下方式进行开启: 修改$LINKIS_CONF_DIR/linkis-env.sh中的 export ENABLE_METADATA_MANAGER=true值为true。 通过linkis-start-all.sh/linkis-stop-all.sh 进行服务启停时，会进行数据源服务的启动与停止。关于数据源更多详情可参考[数据源功能使用](https://linkis.apache.org/zh-CN/docs/1.1.0/deployment/start-metadatasource) 
 
